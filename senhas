@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Senha Aleatória</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+    h1 {
+        color: #333;
+        margin-top: 20px;
+    }
+    #gerador-container {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        animation: fadeIn 0.6s ease-out;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    p {
+        margin-top: 10px;
+        font-size: 18px;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+<script>
+var senhasCopiadas = []; // Lista para armazenar as senhas já copiadas
+
+function gerarSenha() {
+    var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var senha = '';
+    var comprimentoSenha = 12;
+    
+    // Gerar a parte aleatória da senha
+    for (var i = 0; i < comprimentoSenha; i++) {
+        var randomIndex = Math.floor(Math.random() * caracteres.length);
+        senha += caracteres[randomIndex];
+    }
+    
+    // Obter a data atual no formato DDMMYYYY
+    var dataAtual = new Date();
+    var dia = ('0' + dataAtual.getDate()).slice(-2);
+    var mes = ('0' + (dataAtual.getMonth() + 1)).slice(-2);
+    var ano = dataAtual.getFullYear();
+    var dataFormatada = dia + mes + ano;
+    
+    // Combinar a parte aleatória com a data atual
+    senha += dataFormatada;
+    
+    // Exibir a senha gerada
+    var senhaGeradaElement = document.getElementById('senha-gerada');
+    senhaGeradaElement.innerText = senha;
+    
+    // Habilitar o botão de copiar senha
+    var botaoCopiarSenha = document.getElementById('botao-copiar');
+    botaoCopiarSenha.disabled = false;
+    botaoCopiarSenha.style.backgroundColor = '#008CBA'; // Cor azul
+    
+    // Adicionar a senha à lista de senhas copiadas
+    senhasCopiadas.push(senha);
+}
+
+function copiarSenha() {
+    // Copiar a senha do elemento para a área de transferência
+    var senhaCopiada = document.getElementById('senha-gerada').innerText;
+    navigator.clipboard.writeText(senhaCopiada)
+        .then(function() {
+            alert('Senha copiada para a área de transferência.');
+            
+            // Remover a senha da tela
+            var senhaGeradaElement = document.getElementById('senha-gerada');
+            senhaGeradaElement.innerText = '';
+            
+            // Desativar o botão de copiar senha
+            var botaoCopiarSenha = document.getElementById('botao-copiar');
+            botaoCopiarSenha.disabled = true;
+            botaoCopiarSenha.style.backgroundColor = '#aaaaaa'; // Cor cinza
+            
+            // Atualizar a lista de senhas copiadas
+            var senhasCopiadasElement = document.getElementById('senhas-copiadas');
+            senhasCopiadasElement.innerText = senhasCopiadas.join(', ');
+        })
+        .catch(function(err) {
+            console.error('Erro ao copiar senha:', err);
+        });
+}
+</script>
+</head>
+<body>
+    <div id="gerador-container">
+        <h1>Gerador de Senha Aleatória</h1>
+        <button id="botao-gerar" onclick="gerarSenha()">Gerar Senha</button>
+        <p>Senha gerada: <span id="senha-gerada" style="font-size: 24px; color: #333;"></span></p>
+        <button id="botao-copiar" onclick="copiarSenha()" disabled>Copiar Senha</button>
+        <p>Senhas copiadas: <span id="senhas-copiadas" style="font-size: 16px; color: #666;"></span></p>
+    </div>
+</body>
+</html>
